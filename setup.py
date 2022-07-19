@@ -13,7 +13,7 @@ setuptools.setup(
         "Functional Reactive Programming (FRP) library",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="https://github.com/SodiumFRP/sodium",
+    url="https://github.com/mode89/sodium-python",
     packages=setuptools.find_packages(),
     package_data={"sodiumfrp": ["py.typed"]},
     license="BSD-3 License",
