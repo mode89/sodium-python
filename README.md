@@ -4,7 +4,7 @@ Port of Sodium - Functional Reactive Programming (FRP) library - to Python.
 
 ## Installation
 
-Clone the repository and install it with `pip install`.
+Just `pip install sodiumfrp`.
 
 ## Documentation
 
