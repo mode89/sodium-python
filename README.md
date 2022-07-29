@@ -1,6 +1,6 @@
 # Sodium
 
-Port of Sodium - Functional Reactive Programming (FRP) library - to Python.
+Port of [Sodium](https://github.com/SodiumFRP/sodium) - Functional Reactive Programming (FRP) library - to Python.
 
 ## Installation
 
