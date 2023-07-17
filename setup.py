@@ -6,7 +6,7 @@ def get_long_description():
 
 setuptools.setup(
     name="sodiumfrp",
-    version="1.0.0",
+    version="1.0.1",
     author="Stephen Blackheath",
     description= \
         "Python implementation of Sodium - "
