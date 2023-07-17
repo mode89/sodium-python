@@ -105,3 +105,17 @@ def test_cancel_alarm() -> None:
         sleep(0.055)
         l.unlisten()
         assert len(out) == 0
+
+def test_thread_deadlock() -> None:
+    with TimerSystem() as ts:
+        out: List[int] = []
+        def init() -> None:
+            t0 = ts.time_ms().sample()
+            for i in range(1000):
+                alarm = ts.at(Cell.constant(t0 + 50 + int(0.1 * i)))
+                alarm.listen(out.append)
+        Transaction.run(init)
+        sleep(0.2)
+        # This test may fail occasionally, because there is no way to measure
+        # time precisely
+        assert len(out) == 1000

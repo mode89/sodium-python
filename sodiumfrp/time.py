@@ -17,6 +17,8 @@ class TimerSystem:
     def __init__(self) -> None:
         self._time_ms: CellSink[int] = CellSink(int(_now_ms()))
         self._timers: List[Timer] = []
+        # WARNING: running a transaction with _timers_changed locked
+        # may cause a deadlock
         self._timers_changed = Condition()
         self._stop = Event()
         self._released = False
@@ -53,20 +55,22 @@ class TimerSystem:
         a separate thread that would generate transactions firing timers.
         """
         while not self._stop.is_set():
+            trigger_timers = False
             with self._timers_changed:
                 timeout = None
-                while self._timers:
+                if self._timers:
                     earliest_timer = self._timers[0]
                     now = _now_ms()
                     if earliest_timer.time > now:
                         timeout = (earliest_timer.time - now) * 0.001
-                        break
                     else:
-                        # If the time of the earliest timer has passed,
-                        # start an empty transaction to trigger all passed
-                        # timers through the transaction start hook
-                        Transaction.run(lambda: None)
-                self._timers_changed.wait(timeout)
+                        trigger_timers = True
+                if not trigger_timers:
+                    self._timers_changed.wait(timeout)
+            if trigger_timers:
+                # Start an empty transaction to trigger all passed timers
+                # through the transaction start hook
+                Transaction.run(lambda: None)
 
     def _on_transaction_start(self) -> None:
         """
